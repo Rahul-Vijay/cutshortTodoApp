@@ -1,5 +1,5 @@
 {
-  "name": "cutshortTodoApp",
+  "name": "cutshorttodoapp",
   "packageManager": "yarn@3.4.1",
   "scripts": {
     "build": "tsc",

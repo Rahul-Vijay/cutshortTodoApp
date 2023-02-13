@@ -3,12 +3,6 @@ export type AuthResponse = ErrorResponse | { userId: string };
 
 function auth(bearerToken: string): Promise<AuthResponse> {
   return new Promise(function (resolve, reject) {
-    // no bearer token
-    if (bearerToken == undefined) {
-      resolve({ error: { type: "unauthorized", message: "No token present" } });
-      return;
-    }
-
     const token = bearerToken.replace("Bearer ", "");
     if (token === "fakeToken") {
       resolve({ userId: "fakeUserId" });

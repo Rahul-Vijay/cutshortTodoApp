@@ -2,7 +2,7 @@ import express from "express";
 import { Express } from "express-serve-static-core";
 import { connector, summarise } from "swagger-routes-express";
 import YAML from "yamljs";
-
+import * as OpenApiValidator from "express-openapi-validator";
 import * as api from "@todoapp/api/controllers";
 
 export async function createServer(): Promise<Express> {
@@ -12,6 +12,15 @@ export async function createServer(): Promise<Express> {
   console.info(apiSummary);
 
   const server = express();
+
+  // OPEN API Validation object
+  const validatorOptions = {
+    apiSpec: yamlSpecFile,
+    validateRequests: true,
+    validateResponses: true,
+  };
+
+  server.use(OpenApiValidator.middleware(validatorOptions));
 
   // error customization, if request is invalid
   server.use(

@@ -3,7 +3,7 @@ import { Express } from "express-serve-static-core";
 import { connector, summarise } from "swagger-routes-express";
 import YAML from "yamljs";
 
-import * as api from "../api/controllers";
+import * as api from "@todoapp/api/controllers";
 
 export async function createServer(): Promise<Express> {
   const yamlSpecFile = "./config/openapi.yml";

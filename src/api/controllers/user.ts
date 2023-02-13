@@ -1,7 +1,7 @@
 import * as express from "express";
 
-import UserService from "../services/user";
-import { writeJsonResponse } from "../../utils/express";
+import UserService from "@todoapp/api/services/user";
+import { writeJsonResponse } from "@todoapp/utils/express";
 
 export function auth(
   req: express.Request,

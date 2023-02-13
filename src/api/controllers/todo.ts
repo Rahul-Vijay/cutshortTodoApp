@@ -1,5 +1,5 @@
 import * as express from "express";
-import { writeJsonResponse } from "../../utils/express";
+import { writeJsonResponse } from "@todoapp/utils/express";
 
 export function getTodo(req: express.Request, res: express.Response): void {
   const userId = req.query.userId || "12345";

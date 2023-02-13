@@ -4,12 +4,12 @@ import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
 mongoose.Promise = global.Promise;
+mongoose.set("strictQuery", true);
 mongoose.set("debug", process.env.DEBUG !== undefined);
 
 const opts = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true,
   keepAlive: true,
   keepAliveInitialDelay: 300000,
   autoIndex: true,
@@ -41,7 +41,7 @@ class MongoConnection {
       });
 
       mongoose.connection.on("disconnected", () => {
-        console.error("Mongo: disconnected");
+        console.info("Mongo: disconnected");
       });
 
       mongoose.connection.on("error", (err) => {

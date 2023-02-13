@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: Cutshort Social Media / TODO App
+  description: API declaration of social media app
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: vk.rahul318@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+servers:
+  - url: /api/v1
+tags:
+  - name: todo
+    description: TODO APIs
+  - name: post
+    description: POST APIs
+  - name: comment
+    description: COMMENT APIs
+
+paths:
+  /todo:
+    get:
+      description: Returns todo
+      tags:
+        - todo
+      operationId: getTodo
+      parameters:
+        - userId: userId
+          required: true
+          in: query
+          description: The name of a caller
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success

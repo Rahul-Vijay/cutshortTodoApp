@@ -21,6 +21,7 @@ export function auth(
       }
     })
     .catch((err) => {
+      console.log(err);
       writeJsonResponse(res, 500, {
         error: {
           type: "internal_server_error",

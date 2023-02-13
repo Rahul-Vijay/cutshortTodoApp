@@ -25,9 +25,11 @@ paths:
       tags:
         - todo
       operationId: getTodo
+      security:
+        - bearerAuth: []
       parameters:
         - name: userId
-          required: false
+          required: true
           in: query
           description: The userId of a caller
           schema:
@@ -35,3 +37,9 @@ paths:
       responses:
         200:
           description: Success
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

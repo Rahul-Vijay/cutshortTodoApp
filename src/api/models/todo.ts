@@ -10,6 +10,7 @@ interface ITodoDocument extends Document {
 export interface ITodo extends ITodoDocument {}
 export interface ITodoModel extends Model<ITodo> {
   markAsCompleted(id: string): Promise<void>;
+  markAsIncomplete(id: string): Promise<void>;
   updateText(id: string, text: string): Promise<void>;
   getAllTodosOfUser(
     userId: string,
@@ -37,6 +38,10 @@ todoSchema.set("toJSON", {
 
 todoSchema.statics.markAsCompleted = async function (id: string) {
   await this.updateOne({ _id: id }, { completed: true });
+};
+
+todoSchema.statics.markAsIncomplete = async function (id: string) {
+  await this.updateOne({ _id: id }, { completed: false });
 };
 
 todoSchema.statics.updateText = async function (id: string, text: string) {

@@ -36,6 +36,15 @@ describe("save", () => {
     expect(updatedTodo!.completed).toBe(true);
   });
 
+  it("should mark todo as incomplete", async () => {
+    await todo.save();
+
+    await Todo.markAsIncomplete(todo._id);
+    const updatedTodo = await Todo.findById(todo._id);
+
+    expect(updatedTodo!.completed).toBe(false);
+  });
+
   it("should update todo text", async () => {
     const newText = "This is some new text";
     await todo.save();
@@ -57,6 +66,8 @@ describe("save", () => {
       { userId: "1", text: "113 text", completed: false },
       { userId: "1", text: "114 text", completed: false },
       { userId: "1", text: "115 text", completed: false },
+      { userId: "2", text: "211 text", completed: false },
+      { userId: "2", text: "212 text", completed: false },
     ]);
     const firstBatchOfFive = await Todo.getAllTodosOfUser("1", 5, 1);
     const secondBatchOfFive = await Todo.getAllTodosOfUser("1", 5, 2);

@@ -172,6 +172,7 @@ describe("toJSON", () => {
       email: email,
       name: name,
       created: expect.any(Number),
+      _id: user._id,
     });
   });
 });

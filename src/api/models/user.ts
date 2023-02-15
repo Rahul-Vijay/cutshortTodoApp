@@ -15,6 +15,8 @@ export interface IUser extends IUserDocument {
   comparePassword(password: string): Promise<boolean>;
 }
 
+export interface IUserModel extends Model<IUser> {}
+
 const userSchema = new Schema<IUser>(
   {
     password: { type: String, required: true },
@@ -73,8 +75,6 @@ userSchema.methods.comparePassword = function (
     });
   });
 };
-
-export interface IUserModel extends Model<IUser> {}
 
 export const User: IUserModel = model<IUser, IUserModel>("User", userSchema);
 

@@ -82,3 +82,20 @@ describe("save", () => {
     expect(secondBatchOfEight.length).toBe(1);
   });
 });
+
+describe("toJSON", () => {
+  const text = "This is some todo text";
+  const completed = false;
+  const userId = "123";
+  const todo = new Todo({ text: text, completed: completed, userId: userId });
+  it("should return valid JSON", async () => {
+    await todo.save();
+    expect(todo.toJSON()).toEqual({
+      text: text,
+      completed: completed,
+      created: expect.any(Number),
+      userId: userId,
+      _id: todo._id,
+    });
+  });
+});

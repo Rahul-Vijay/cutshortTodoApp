@@ -14,10 +14,9 @@ export async function postTodo(
   res: express.Response
 ): Promise<void> {
   const { text, userId } = req.body;
-
   try {
     const todoId = await TodoService.postANewTodo(text, userId);
-    writeJsonResponse(res, 201, { message: "Todo Created", id: todoId });
+    writeJsonResponse(res, 201, { message: "Todo Created", ...todoId });
   } catch (error) {
     console.log(error);
     writeJsonResponse(res, 500, {
@@ -25,8 +24,4 @@ export async function postTodo(
       status: "postTodo",
     });
   }
-
-  const fakeTokenId = res.locals.auth.userId;
-  const message = `Hello, ${userId}, with ${fakeTokenId}!`;
-  writeJsonResponse(res, 200, { message });
 }

@@ -1,4 +1,5 @@
 import express from "express";
+import bodyParser from "body-parser";
 import { Express } from "express-serve-static-core";
 import { connector, summarise } from "swagger-routes-express";
 import YAML from "yamljs";
@@ -12,6 +13,7 @@ export async function createServer(): Promise<Express> {
   console.info(apiSummary);
 
   const server = express();
+  server.use(bodyParser.json());
 
   // OPEN API Validation object
   const validatorOptions = {

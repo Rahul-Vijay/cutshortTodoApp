@@ -17,11 +17,19 @@ export async function postTodo(
   try {
     const todoId = await TodoService.postANewTodo(text, userId);
     writeJsonResponse(res, 201, { message: "Todo Created", ...todoId });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
+    if (error.error != undefined) {
+      if (error.error.type == "todo_post_error")
+        writeJsonResponse(res, 400, {
+          message: error.error.errorMessage,
+          fn: "postTodo",
+        });
+      return;
+    }
     writeJsonResponse(res, 500, {
       message: "Internal Server Error",
-      status: "postTodo",
+      fn: "postTodo",
     });
   }
 }

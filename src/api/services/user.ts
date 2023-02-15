@@ -9,7 +9,11 @@ function auth(bearerToken: string): Promise<IdResponse> {
     }
 
     resolve({
-      error: { type: "unauthorized", message: "Authentication Failed" },
+      error: {
+        type: "unauthorized",
+        message: "Authentication Failed",
+        errorMessage: "",
+      },
     });
   });
 }

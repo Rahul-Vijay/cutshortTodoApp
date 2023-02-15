@@ -12,7 +12,6 @@ interface IUserDocument extends Document {
 }
 
 export interface IUser extends IUserDocument {
-  // document level operations
   comparePassword(password: string): Promise<boolean>;
 }
 
@@ -58,7 +57,6 @@ userSchema.set("toJSON", {
     ret.created = ret.created.getTime();
 
     delete ret.__v;
-    delete ret._id;
     delete ret.password;
   },
 });
@@ -76,9 +74,7 @@ userSchema.methods.comparePassword = function (
   });
 };
 
-export interface IUserModel extends Model<IUser> {
-  // collection/docouments level operations (fetch one or many, update, save back to db)
-}
+export interface IUserModel extends Model<IUser> {}
 
 export const User: IUserModel = model<IUser, IUserModel>("User", userSchema);
 

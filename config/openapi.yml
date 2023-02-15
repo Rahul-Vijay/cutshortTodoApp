@@ -38,6 +38,33 @@ paths:
         200:
           description: Success
 
+  /newTodo:
+    post:
+      description: Posts a new todo to the database
+      tags:
+        - todo
+      operationId: postTodo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - text
+                - userId
+              properties:
+                text:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        201:
+          description: Success
+        500:
+          description: Error
+
 components:
   securitySchemes:
     bearerAuth:

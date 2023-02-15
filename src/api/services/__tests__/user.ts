@@ -3,7 +3,7 @@ import user from "../user";
 describe("auth", () => {
   it("should resolve with true and valid userId for hardcoded token", async () => {
     const response = await user.auth("fakeToken");
-    expect(response).toEqual({ userId: "fakeUserId" });
+    expect(response).toEqual({ id: "fakeUserId" });
   });
 
   it("should resolve with false for invalid token", async () => {

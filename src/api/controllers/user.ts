@@ -13,7 +13,7 @@ export function auth(
     .then((authResponse) => {
       if (!(authResponse as any).error) {
         res.locals.auth = {
-          userId: (authResponse as { userId: string }).userId,
+          userId: (authResponse as { id: string }).id,
         };
         next();
       } else {

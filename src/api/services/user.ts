@@ -1,11 +1,10 @@
-export type ErrorResponse = { error: { type: string; message: string } };
-export type AuthResponse = ErrorResponse | { userId: string };
+import { IdResponse } from "@todoapp/api/interfaces/interfaces";
 
-function auth(bearerToken: string): Promise<AuthResponse> {
+function auth(bearerToken: string): Promise<IdResponse> {
   return new Promise(function (resolve, reject) {
     const token = bearerToken.replace("Bearer ", "");
     if (token === "fakeToken") {
-      resolve({ userId: "fakeUserId" });
+      resolve({ id: "fakeUserId" });
       return;
     }
 

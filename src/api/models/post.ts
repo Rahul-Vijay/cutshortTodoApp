@@ -12,6 +12,11 @@ interface IPostDocument extends Document {
 export interface IPost extends IPostDocument {}
 
 export interface IPostModel extends Model<IPost> {
+  fetchUserPosts(
+    userId: string,
+    limit: number,
+    page: number
+  ): Promise<IPostDocument[]>;
   addComment(text: string, userId: string, postId: string): Promise<Boolean>;
 }
 
@@ -42,6 +47,19 @@ postSchema.set("toJSON", {
     delete ret.__v;
   },
 });
+
+postSchema.statics.fetchUserPosts = async function (
+  userId: string,
+  limit: number,
+  page: number
+) {
+  const posts = await this.find({ userId })
+    .sort({ created: -1 })
+    .limit(limit)
+    .skip((page - 1) * limit)
+    .exec();
+  return posts;
+};
 
 postSchema.statics.addComment = async function (
   text: string,

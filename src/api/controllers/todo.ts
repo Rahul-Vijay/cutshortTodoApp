@@ -99,13 +99,13 @@ export async function updateTodoStatus(
       if (error.error.type == "todo_patch_error")
         writeJsonResponse(res, 400, {
           message: error.error.errorMessage,
-          fn: "updateTodo",
+          fn: "updateTodoStatus",
         });
       return;
     }
     writeJsonResponse(res, 500, {
       message: "Internal Server Error",
-      fn: "updateTodo",
+      fn: "updateTodoStatus",
     });
   }
 }

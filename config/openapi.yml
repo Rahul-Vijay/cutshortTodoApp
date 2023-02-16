@@ -52,6 +52,8 @@ paths:
       tags:
         - todo
       operationId: postTodo
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -67,6 +69,64 @@ paths:
                   type: string
                 userId:
                   type: string
+      responses:
+        201:
+          description: Success
+        500:
+          description: Error
+
+  /updateTodoText:
+    patch:
+      description: Updates the text of the todo
+      tags:
+        - todo
+      operationId: updateTodoText
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - text
+                - todoId
+              properties:
+                text:
+                  type: string
+                todoId:
+                  type: string
+      responses:
+        201:
+          description: Success
+        500:
+          description: Error
+
+  /updateTodoStatus:
+    patch:
+      description: Marks it as complete
+      tags:
+        - todo
+      operationId: updateTodoStatus
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - todoId
+                - completed
+              properties:
+                todoId:
+                  type: string
+                completed:
+                  type: boolean
       responses:
         201:
           description: Success

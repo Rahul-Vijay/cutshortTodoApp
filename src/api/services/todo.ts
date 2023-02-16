@@ -1,4 +1,4 @@
-import { IdResponse } from "@todoapp/api/interfaces/interfaces";
+import { BoolResponse, IdResponse } from "@todoapp/api/interfaces/interfaces";
 import Todo from "@todoapp/api/models/todo";
 import { Error } from "mongoose";
 
@@ -11,7 +11,7 @@ function getTodos(userId: string, limit: number, page: number) {
       reject({
         error: {
           type: "todo_get_error",
-          message: "Could not get trades",
+          message: "Could not get Todos",
           errorMessage: "",
         },
       });
@@ -41,4 +41,46 @@ function postANewTodo(text: string, userId: string): Promise<IdResponse> {
   });
 }
 
-export default { postANewTodo, getTodos };
+function updateTodoText(text: string, todoId: string): Promise<BoolResponse> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await Todo.updateText(todoId, text);
+      resolve({ status: true });
+    } catch (error) {
+      reject({
+        error: {
+          type: "todo_patch_error",
+          message: "Could not update",
+          errorMessage: "",
+        },
+      });
+    }
+  });
+}
+
+function updateTodoStatus(
+  completed: boolean,
+  todoId: string
+): Promise<BoolResponse> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (completed) {
+        await Todo.markAsCompleted(todoId);
+      } else {
+        await Todo.markAsIncomplete(todoId);
+      }
+
+      resolve({ status: true });
+    } catch (error) {
+      reject({
+        error: {
+          type: "todo_patch_error",
+          message: "Could not update",
+          errorMessage: "",
+        },
+      });
+    }
+  });
+}
+
+export default { postANewTodo, getTodos, updateTodoText, updateTodoStatus };

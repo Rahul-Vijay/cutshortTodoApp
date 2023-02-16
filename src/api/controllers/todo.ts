@@ -53,3 +53,59 @@ export async function postTodo(
     });
   }
 }
+
+export async function updateTodoText(
+  req: express.Request,
+  res: express.Response
+): Promise<void> {
+  const { text, todoId } = req.body;
+  try {
+    const todoStatus = await TodoService.updateTodoText(text, todoId);
+    writeJsonResponse(res, 201, {
+      message: "Todo Text Updated",
+      ...todoStatus,
+    });
+  } catch (error: any) {
+    console.log(error);
+    if (error.error != undefined) {
+      if (error.error.type == "todo_patch_error")
+        writeJsonResponse(res, 400, {
+          message: error.error.errorMessage,
+          fn: "updateTodo",
+        });
+      return;
+    }
+    writeJsonResponse(res, 500, {
+      message: "Internal Server Error",
+      fn: "updateTodo",
+    });
+  }
+}
+
+export async function updateTodoStatus(
+  req: express.Request,
+  res: express.Response
+): Promise<void> {
+  const { completed, todoId } = req.body;
+  try {
+    const todoStatus = await TodoService.updateTodoStatus(completed, todoId);
+    writeJsonResponse(res, 201, {
+      message: "Todo Status Updated",
+      ...todoStatus,
+    });
+  } catch (error: any) {
+    console.log(error);
+    if (error.error != undefined) {
+      if (error.error.type == "todo_patch_error")
+        writeJsonResponse(res, 400, {
+          message: error.error.errorMessage,
+          fn: "updateTodo",
+        });
+      return;
+    }
+    writeJsonResponse(res, 500, {
+      message: "Internal Server Error",
+      fn: "updateTodo",
+    });
+  }
+}

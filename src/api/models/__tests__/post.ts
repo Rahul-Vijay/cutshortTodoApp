@@ -1,6 +1,6 @@
 import Post from "@todoapp/api/models/post";
 import db from "@todoapp/utils/db";
-import Comment from "../comment";
+import Comment from "@todoapp/api/models/comment";
 
 beforeAll(async () => {
   await db.open();

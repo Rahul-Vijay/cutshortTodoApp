@@ -17,7 +17,7 @@ export interface IPostModel extends Model<IPost> {
     limit: number,
     page: number
   ): Promise<IPostDocument[]>;
-  addComment(text: string, userId: string, postId: string): Promise<Boolean>;
+  addComment(text: string, userId: string, postId: string): Promise<boolean>;
 }
 
 // set max comments array size as 10

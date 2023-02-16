@@ -1,16 +1,19 @@
 import { Schema, Document, model, Model } from "mongoose";
-import { ICommentDocument } from "./comment";
+import Comment, { ICommentDocument } from "./comment";
 
 interface IPostDocument extends Document {
   text: string;
   userId: string;
   comments: ICommentDocument[];
+  filled: boolean;
   created: Date;
 }
 
 export interface IPost extends IPostDocument {}
 
-export interface IPostModel extends Model<IPost> {}
+export interface IPostModel extends Model<IPost> {
+  addComment(text: string, userId: string, postId: string): Promise<Boolean>;
+}
 
 // set max comments array size as 10
 // rest of the comments to load from a different collection
@@ -22,8 +25,10 @@ const postSchema = new Schema<IPost>(
   {
     text: { type: String, required: true },
     userId: { type: String, required: true },
+    filled: { type: Boolean, default: false },
     comments: {
       type: [],
+      default: [],
       validate: [arrayLimit, "maximum comments within document"],
     },
     created: { type: Date, default: Date.now },
@@ -37,6 +42,38 @@ postSchema.set("toJSON", {
     delete ret.__v;
   },
 });
+
+postSchema.statics.addComment = async function (
+  text: string,
+  userId: string,
+  postId: string
+): Promise<Boolean> {
+  try {
+    const post = await this.findById(postId);
+    if (post != null) {
+      const comment = new Comment({
+        text,
+        userId,
+        postId,
+      });
+      if (!post.filled) {
+        let newComments = [...post.comments];
+        newComments.push(comment);
+        post.comments = newComments;
+        if (newComments.length == 10) {
+          post.filled = true;
+        }
+        await post.save();
+      } else {
+        await comment.save();
+      }
+    }
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
 
 export const Post: IPostModel = model<IPost, IPostModel>("Post", postSchema);
 

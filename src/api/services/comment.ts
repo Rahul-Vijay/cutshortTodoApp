@@ -8,8 +8,8 @@ function getComments(userId: string, limit: number, page: number) {
     } catch (error) {
       reject({
         error: {
-          type: "post_get_error",
-          message: "Could not get Posts",
+          type: "comment_get_error",
+          message: "Could not get Comments",
           errorMessage: "",
         },
       });

@@ -133,6 +133,121 @@ paths:
         500:
           description: Error
 
+  /post:
+    get:
+      description: Returns post
+      tags:
+        - post
+      operationId: getPosts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          required: true
+          in: query
+          description: The userId of a caller
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+
+  /newPost:
+    post:
+      description: Adds a new Post to the database
+      tags:
+        - post
+      operationId: addPost
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - text
+                - userId
+              properties:
+                text:
+                  type: string
+                userId:
+                  type: string
+      responses:
+        201:
+          description: Success
+        500:
+          description: Error
+
+  /comment:
+    get:
+      description: Returns comments
+      tags:
+        - comment
+      operationId: getComments
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          required: true
+          in: query
+          description: The userId of a caller
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+
+  /newComment:
+    post:
+      description: Adds a new Comment to a post
+      tags:
+        - comment
+      operationId: addComment
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - text
+                - userId
+                - postId
+              properties:
+                text:
+                  type: string
+                userId:
+                  type: string
+                postId:
+                  type: string
+      responses:
+        201:
+          description: Success
+        500:
+          description: Error
+
 components:
   securitySchemes:
     bearerAuth:

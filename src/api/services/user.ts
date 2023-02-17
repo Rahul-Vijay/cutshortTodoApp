@@ -97,27 +97,25 @@ function createUser(
   password: string,
   name: string
 ): Promise<IdResponse> {
-  return new Promise(function (resolve, reject) {
+  return new Promise(async function (resolve, reject) {
     const user = new User({ email: email, password: password, name: name });
-    user
-      .save()
-      .then((u) => {
-        resolve({ id: u._id.toString() });
-      })
-      .catch((err) => {
-        if (err.code === 11000) {
-          reject({
-            error: {
-              type: "account_already_exists",
-              message: `${email} already exists`,
-              errorMessage: "",
-            },
-          });
-        } else {
-          console.error(`createUser: ${err}`);
-          reject(err);
-        }
-      });
+    try {
+      const u = await user.save();
+      resolve({ id: u._id.toString() });
+    } catch (err: any) {
+      if (err.code === 11000) {
+        reject({
+          error: {
+            type: "account_already_exists",
+            message: `${email} already exists`,
+            errorMessage: "",
+          },
+        });
+      } else {
+        console.error(`createUser: ${err}`);
+        reject(err);
+      }
+    }
   });
 }
 

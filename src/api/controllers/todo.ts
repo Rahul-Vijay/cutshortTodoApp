@@ -10,11 +10,15 @@ export async function getTodo(
   const { limit = 5, page = 1 } = req.query;
   const userId = req.query.userId as string;
   try {
-    // only allow users to get their own todos
     const authToken = req.headers.authorization!;
 
-    const decoded = jwt.verify(authToken, "secretKeyyyy") as { userId: string };
-    if (decoded.userId == userId) {
+    const decoded = jwt.verify(authToken, "secretKeyyyy") as {
+      userId: string;
+      role: string;
+    };
+
+    // only allow users & admins to get todos
+    if (decoded.userId == userId || decoded.role == "admin") {
       const data = await TodoService.getTodos(
         userId,
         Number(limit),
@@ -47,7 +51,10 @@ export async function postTodo(
     // only allow users to post their own todos
     const authToken = req.headers.authorization!;
 
-    const decoded = jwt.verify(authToken, "secretKeyyyy") as { userId: string };
+    const decoded = jwt.verify(authToken, "secretKeyyyy") as {
+      userId: string;
+      role: string;
+    };
     if (decoded.userId == userId) {
       const todoId = await TodoService.postANewTodo(text, userId);
       writeJsonResponse(res, 201, { message: "Todo Created", ...todoId });

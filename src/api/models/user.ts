@@ -8,6 +8,7 @@ interface IUserDocument extends Document {
 
   email: string;
   name: string;
+  role: string;
   created: Date;
 }
 
@@ -28,6 +29,7 @@ const userSchema = new Schema<IUser>(
       validate: [validator.isEmail, "does not match email regex"],
     },
     name: { type: String, required: true },
+    role: { type: String },
     created: { type: Date, default: Date.now },
   },
   { strict: true }

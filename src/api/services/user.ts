@@ -24,11 +24,13 @@ function auth(bearerToken: string): Promise<IdResponse> {
 }
 
 function createAuthToken(
-  userId: string
+  userId: string,
+  role: string
 ): Promise<{ token: string; expireAt: Date }> {
   return new Promise(function (resolve, reject) {
+    let jwtPayload = { userId, role };
     jwt.sign(
-      { userId: userId },
+      jwtPayload,
       "secretKeyyyy",
       {
         algorithm: "RS256",
@@ -75,7 +77,13 @@ async function login(
       };
     }
 
-    const authToken = await createAuthToken(user._id.toString());
+    // for role based access
+    let role = user.role;
+    if (user.role == undefined) {
+      role = "user";
+    }
+
+    const authToken = await createAuthToken(user._id.toString(), role);
     return {
       userId: user._id.toString(),
       token: authToken.token,

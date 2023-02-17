@@ -1,4 +1,9 @@
-import { IdResponse } from "@todoapp/api/interfaces/interfaces";
+import {
+  IdResponse,
+  LoginUserResponse,
+} from "@todoapp/api/interfaces/interfaces";
+import jwt from "jsonwebtoken";
+import User from "../models/user";
 
 function auth(bearerToken: string): Promise<IdResponse> {
   return new Promise(function (resolve, reject) {
@@ -18,4 +23,107 @@ function auth(bearerToken: string): Promise<IdResponse> {
   });
 }
 
-export default { auth: auth };
+function createAuthToken(
+  userId: string
+): Promise<{ token: string; expireAt: Date }> {
+  return new Promise(function (resolve, reject) {
+    jwt.sign(
+      { userId: userId },
+      "secretKeyyyy",
+      {
+        algorithm: "RS256",
+        expiresIn: "14d",
+      },
+      (err: Error | null, encoded: string | undefined) => {
+        if (err === null && encoded !== undefined) {
+          const expireAfter = 2 * 604800; /* 2 weeks */
+          const expireAt = new Date();
+          expireAt.setSeconds(expireAt.getSeconds() + expireAfter);
+          resolve({ token: encoded, expireAt: expireAt });
+        } else {
+          reject(err);
+        }
+      }
+    );
+  });
+}
+
+async function login(
+  login: string,
+  password: string
+): Promise<LoginUserResponse> {
+  try {
+    const user = await User.findOne({ email: login });
+    if (!user) {
+      return {
+        error: {
+          type: "invalid_credentials",
+          message: "Invalid Login/Password",
+          errorMessage: "",
+        },
+      };
+    }
+
+    const passwordMatch = await user.comparePassword(password);
+    if (!passwordMatch) {
+      return {
+        error: {
+          type: "invalid_credentials",
+          message: "Invalid Login/Password",
+          errorMessage: "",
+        },
+      };
+    }
+
+    const authToken = await createAuthToken(user._id.toString());
+    return {
+      userId: user._id.toString(),
+      token: authToken.token,
+      expireAt: authToken.expireAt,
+    };
+  } catch (err) {
+    console.error(`login: ${err}`);
+    return Promise.reject({
+      error: {
+        type: "internal_server_error",
+        message: "Internal Server Error",
+      },
+    });
+  }
+}
+
+function createUser(
+  email: string,
+  password: string,
+  name: string
+): Promise<IdResponse> {
+  return new Promise(function (resolve, reject) {
+    const user = new User({ email: email, password: password, name: name });
+    user
+      .save()
+      .then((u) => {
+        resolve({ id: u._id.toString() });
+      })
+      .catch((err) => {
+        if (err.code === 11000) {
+          reject({
+            error: {
+              type: "account_already_exists",
+              message: `${email} already exists`,
+              errorMessage: "",
+            },
+          });
+        } else {
+          console.error(`createUser: ${err}`);
+          reject(err);
+        }
+      });
+  });
+}
+
+export default {
+  auth: auth,
+  createAuthToken: createAuthToken,
+  login: login,
+  createUser: createUser,
+};

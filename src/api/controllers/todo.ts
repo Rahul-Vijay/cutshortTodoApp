@@ -1,6 +1,7 @@
 import * as express from "express";
 import { writeJsonResponse } from "@todoapp/utils/express";
 import TodoService from "@todoapp/api/services/todo";
+import jwt from "jsonwebtoken";
 
 export async function getTodo(
   req: express.Request,
@@ -8,25 +9,33 @@ export async function getTodo(
 ): Promise<void> {
   const { limit = 5, page = 1 } = req.query;
   const userId = req.query.userId as string;
-
   try {
-    const data = await TodoService.getTodos(
-      userId,
-      Number(limit),
-      Number(page)
-    );
-    writeJsonResponse(res, 200, {
-      message: "resolved",
-      data,
-    });
+    // only allow users to get their own todos
+    const authToken = req.headers.authorization!;
+
+    const decoded = jwt.verify(authToken, "secretKeyyyy") as { userId: string };
+    if (decoded.userId == userId) {
+      const data = await TodoService.getTodos(
+        userId,
+        Number(limit),
+        Number(page)
+      );
+      writeJsonResponse(res, 200, {
+        message: "resolved",
+        data,
+      });
+    } else {
+      writeJsonResponse(res, 400, {
+        message: "Unauthorized",
+        fn: "getTodo",
+      });
+    }
   } catch (error) {
     writeJsonResponse(res, 500, {
       message: "Internal Server Error",
       fn: "getTodo",
     });
   }
-
-  // writeJsonResponse(res, 200, { message });
 }
 
 export async function postTodo(
@@ -35,8 +44,14 @@ export async function postTodo(
 ): Promise<void> {
   const { text, userId } = req.body;
   try {
-    const todoId = await TodoService.postANewTodo(text, userId);
-    writeJsonResponse(res, 201, { message: "Todo Created", ...todoId });
+    // only allow users to post their own todos
+    const authToken = req.headers.authorization!;
+
+    const decoded = jwt.verify(authToken, "secretKeyyyy") as { userId: string };
+    if (decoded.userId == userId) {
+      const todoId = await TodoService.postANewTodo(text, userId);
+      writeJsonResponse(res, 201, { message: "Todo Created", ...todoId });
+    }
   } catch (error: any) {
     console.log(error);
     if (error.error != undefined) {
